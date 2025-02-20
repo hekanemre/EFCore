@@ -6,7 +6,8 @@ public class ApplicationHelper
 
     public static void Build() 
     {
-        var directory = @"C:\Users\hakan\OneDrive\Masaüstü\Github\FirstRepo-EFCore\EFCore\EFCore\CodeFirstMigration";
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var directory = Directory.GetParent(currentDirectory)?.Parent?.Parent?.FullName;
         var builder = new ConfigurationBuilder().SetBasePath(directory/*Directory.GetCurrentDirectory()*/)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
