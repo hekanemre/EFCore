@@ -1,15 +1,17 @@
 ﻿namespace CodeFirstMigration.Services;
 
 public class EFCoreStateService (
-        VehicleDbContext _context
+        VehicleDbContext context
     ): IEFCoreStateService
 {
     public async Task ManageStates()
     {
-        using (var context = _context)
-        {
-            #region READ --> STATE : UNCHANGED
-            var brands = await context.Brands.ToListAsync();
+        #region ContextId Id of an dbcontext instance
+            Console.WriteLine($"Context instance Id of EFCoreStateService is : {context.ContextId}");
+        #endregion ContextId Id of an dbcontext instance
+
+        #region READ --> STATE : UNCHANGED
+        var brands = await context.Brands.ToListAsync();
 
             Console.WriteLine("State Changes");
             Console.WriteLine("------------READ-------------");
@@ -20,9 +22,9 @@ public class EFCoreStateService (
                 Console.WriteLine($"{x.Id} : {x.Name} --> state : {state}");
             });
             Console.WriteLine("------------READ-------------");
-            #endregion READ --> STATE : UNCHANGED
+        #endregion READ --> STATE : UNCHANGED
 
-            #region INSERT --> STATE : ADDED
+        #region INSERT --> STATE : ADDED
             Console.WriteLine("------------ADD-------------");
             var newBrand = new Brand()
             {
@@ -38,20 +40,24 @@ public class EFCoreStateService (
             await context.SaveChangesAsync();
             Console.WriteLine($"State after savechange is --> {context.Entry(newBrand).State}");//UNCHANGED
             Console.WriteLine("------------ADD-------------");
-            #endregion INSERT --> STATE : ADDED
+        #endregion INSERT --> STATE : ADDED
 
-            #region UPDATE --> STATE : MODIFIED
+        #region UPDATE --> STATE : MODIFIED
             Console.WriteLine("------------READ AND UPDATE-------------");
             var existingBrand = await context.Brands.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
             Console.WriteLine($"Initial state is --> {context.Entry(existingBrand).State}");//UNCHANGED
             existingBrand.Name = "ALFA ROMEO";
             Console.WriteLine($"Updated classes state is --> {context.Entry(existingBrand).State}");//MODIFIED
+
+            //With using Update method we don't need to track any data we can give data manually
+            //context.Update(new Brand() { Id = 1, Name = "VOLVO" });
+
             await context.SaveChangesAsync();
             Console.WriteLine($"State after savechange is --> {context.Entry(existingBrand).State}");//UNCHANGED
             Console.WriteLine("------------READ AND UPDATE-------------");
-            #endregion UPDATE --> STATE : MODIFIED
+        #endregion UPDATE --> STATE : MODIFIED
 
-            #region DELETE --> STATE : DELETED
+        #region DELETE --> STATE : DELETED
             Console.WriteLine("------------READ AND DELETE-------------");
             var lastInsertedBrand = await context.Brands.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
             Console.WriteLine($"Initial state is --> {context.Entry(lastInsertedBrand).State}");//UNCHANGED
@@ -60,7 +66,7 @@ public class EFCoreStateService (
             await context.SaveChangesAsync();
             Console.WriteLine($"State after savechange is --> {context.Entry(existingBrand).State}");//DETACHED
             Console.WriteLine("------------READ AND DELETE-------------");
-            #endregion DELETE --> STATE : DELETED
-        }
+        #endregion DELETE --> STATE : DELETED
+
     }
 }
