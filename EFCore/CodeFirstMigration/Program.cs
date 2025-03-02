@@ -11,6 +11,7 @@ services.AddDbContext<VehicleDbContext>();
 // Whenever someone asks for IEFCoreStateService, give them an EFCoreStateService class
 services.AddScoped<IEFCoreStateService, EFCoreStateService>();
 services.AddScoped<IChangeTrackerService, ChangeTrackerService>();
+services.AddScoped<IDbSetMethodsService, DbSetMethodsService>();
 
 // This finalizes the DI container, making it ready for use
 var serviceProvider = services.BuildServiceProvider();
@@ -26,4 +27,7 @@ using (var scope = serviceProvider.CreateScope())
 
     var ChangeTrackerService = scopedProvider.GetRequiredService<IChangeTrackerService>();
     await ChangeTrackerService.ManageTracker();
+
+    var DbSetMethodsService = scopedProvider.GetRequiredService<IDbSetMethodsService>();
+    await DbSetMethodsService.ManageMethods();
 }

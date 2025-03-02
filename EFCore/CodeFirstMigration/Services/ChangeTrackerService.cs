@@ -18,13 +18,16 @@ public class ChangeTrackerService (
         #endregion AsNoTracking()
 
         #region ChangeTracker attribute of DbContext
-        //Thanks to ChangeTracker if we have some fields that all inserted entities has (CreatedDate,CreatedBy) we can set values to these fields
-        context.Add(new Brand() { Name = "FORD" });
+        var brands = await context.Brands.Where(x => x.IsActive).ToListAsync();
+        if (!brands.Any(b => new[] { "FORD", "FIAT", "DODGE" }.Contains(b.Name.ToUpper())))
+        {
+            context.Add(new Brand() { Name = "FORD" });
             context.Add(new Brand() { Name = "FIAT" });
             context.Add(new Brand() { Name = "DODGE" });
-           
+            //Thanks to ChangeTracker if we have some fields that all inserted entities has (CreatedDate,CreatedBy) we can set values to these fields
             // This method only will change data that tracked in memory
             context.SaveChanges();
+        }      
         #endregion ChangeTracker attribute of DbContext
 
     }

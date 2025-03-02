@@ -6,3 +6,5 @@ global using CodeFirstMigration.ServiceInterfaces;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.ComponentModel.DataAnnotations;
